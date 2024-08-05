@@ -1,0 +1,5 @@
+log
+storage
+tmp
+vendor
+db/development.sqlite3
