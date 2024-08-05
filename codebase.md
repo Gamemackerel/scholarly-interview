@@ -120,6 +120,15 @@ group :test do
   gem "webdrivers"
 end
 
+gem "byebug", "~> 11.1", :groups => [:development, :test]
+
+```
+
+# .tool-versions
+
+```
+ruby 3.3.3
+
 ```
 
 # .ruby-version
@@ -190,6 +199,7 @@ log
 storage
 tmp
 vendor
+db/development.sqlite3
 ```
 
 # test/test_helper.rb
@@ -458,233 +468,6 @@ This is a binary file of the type: Image
   </div>
 </body>
 </html>
-
-```
-
-# db/seeds.rb
-
-```rb
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-
-```
-
-# config/storage.yml
-
-```yml
-test:
-  service: Disk
-  root: <%= Rails.root.join("tmp/storage") %>
-
-local:
-  service: Disk
-  root: <%= Rails.root.join("storage") %>
-
-# Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
-# amazon:
-#   service: S3
-#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
-#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
-#   region: us-east-1
-#   bucket: your_own_bucket-<%= Rails.env %>
-
-# Remember not to checkin your GCS keyfile to a repository
-# google:
-#   service: GCS
-#   project: your_project
-#   credentials: <%= Rails.root.join("path/to/gcs.keyfile") %>
-#   bucket: your_own_bucket-<%= Rails.env %>
-
-# Use bin/rails credentials:edit to set the Azure Storage secret (as azure_storage:storage_access_key)
-# microsoft:
-#   service: AzureStorage
-#   storage_account_name: your_account_name
-#   storage_access_key: <%= Rails.application.credentials.dig(:azure_storage, :storage_access_key) %>
-#   container: your_container_name-<%= Rails.env %>
-
-# mirror:
-#   service: Mirror
-#   primary: local
-#   mirrors: [ amazon, google, microsoft ]
-
-```
-
-# config/routes.rb
-
-```rb
-Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
-end
-
-```
-
-# config/puma.rb
-
-```rb
-# Puma can serve each request in a thread from an internal thread pool.
-# The `threads` method setting takes two numbers: a minimum and maximum.
-# Any libraries that use thread pools should be configured to match
-# the maximum value specified for Puma. Default is set to 5 threads for minimum
-# and maximum; this matches the default thread size of Active Record.
-#
-max_threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
-min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
-threads min_threads_count, max_threads_count
-
-# Specifies the `worker_timeout` threshold that Puma will use to wait before
-# terminating a worker in development environments.
-#
-worker_timeout 3600 if ENV.fetch("RAILS_ENV", "development") == "development"
-
-# Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-#
-port ENV.fetch("PORT") { 3000 }
-
-# Specifies the `environment` that Puma will run in.
-#
-environment ENV.fetch("RAILS_ENV") { "development" }
-
-# Specifies the `pidfile` that Puma will use.
-pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
-
-# Specifies the number of `workers` to boot in clustered mode.
-# Workers are forked web server processes. If using threads and workers together
-# the concurrency of the application would be max `threads` * `workers`.
-# Workers do not work on JRuby or Windows (both of which do not support
-# processes).
-#
-# workers ENV.fetch("WEB_CONCURRENCY") { 2 }
-
-# Use the `preload_app!` method when specifying a `workers` number.
-# This directive tells Puma to first boot the application and load code
-# before forking the application. This takes advantage of Copy On Write
-# process behavior so workers use less memory.
-#
-# preload_app!
-
-# Allow puma to be restarted by `bin/rails restart` command.
-plugin :tmp_restart
-
-```
-
-# config/importmap.rb
-
-```rb
-# Pin npm packages by running ./bin/importmap
-
-pin "application", preload: true
-pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
-
-```
-
-# config/environment.rb
-
-```rb
-# Load the Rails application.
-require_relative "application"
-
-# Initialize the Rails application.
-Rails.application.initialize!
-
-```
-
-# config/database.yml
-
-```yml
-# SQLite. Versions 3.8.0 and up are supported.
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem "sqlite3"
-#
-default: &default
-  adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-
-development:
-  <<: *default
-  database: db/development.sqlite3
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: db/test.sqlite3
-
-production:
-  <<: *default
-  database: db/production.sqlite3
-
-```
-
-# config/credentials.yml.enc
-
-```enc
-zRybEhBfXA8mLlx4AZw9DXJ+p7xcT7FcrEz5oMkQg70AByqrzNLrEMz0lbTwZbeCuHz/wfADJOG7+PHu7eQdcwPcECea+HdpsfczGEWwYyrlRaxMIhdYlk06MDt+ip544H78xynEqCSh6wjCyWnlOq99uFSxNbMzoNJcCVzhIa0RsvK6i9ZbgcgdJYRzn1Cd9TJ37aqefgVkS1FS7KyGDFjDxxqc4R/RwenCpK3Nr7s+OiGBcLIvO+HIblas14MjdXJraQJzkJ3Pij6aC8mE6P4RN9coxefBtWEkKsRqJ+m1SMvdG0+pGY9NiInnhGX3YXMJl3FDtaKxjajFo9iJu8tf6XmTQ81hiAAFFDJkL2HTqulP46Bjbf76eLVlJOH+3u8CUcb19l8xAAJhAEaZ2l59vvI/vctYzmWc--Sb+c1lxTGpJ6ui19--uT1P8R16CotcVu2TSO4Nvg==
-```
-
-# config/cable.yml
-
-```yml
-development:
-  adapter: redis
-  url: redis://localhost:6379/1
-
-test:
-  adapter: test
-
-production:
-  adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
-  channel_prefix: interview_production
-
-```
-
-# config/boot.rb
-
-```rb
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
-
-require "bundler/setup" # Set up gems listed in the Gemfile.
-require "bootsnap/setup" # Speed up boot time by caching expensive operations.
-
-```
-
-# config/application.rb
-
-```rb
-require_relative "boot"
-
-require "rails/all"
-
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups)
-
-module Interview
-  class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
-
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
-  end
-end
 
 ```
 
@@ -3032,6 +2815,237 @@ response = claude_client.messages(messages,
 
 ```
 
+# db/test.sqlite3
+
+This is a binary file of the type: Binary
+
+# db/seeds.rb
+
+```rb
+# This file should contain all the record creation needed to seed the database with its default values.
+# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+#
+# Examples:
+#
+#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
+#   Character.create(name: "Luke", movie: movies.first)
+
+```
+
+# config/storage.yml
+
+```yml
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
+# Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
+# amazon:
+#   service: S3
+#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
+#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
+#   region: us-east-1
+#   bucket: your_own_bucket-<%= Rails.env %>
+
+# Remember not to checkin your GCS keyfile to a repository
+# google:
+#   service: GCS
+#   project: your_project
+#   credentials: <%= Rails.root.join("path/to/gcs.keyfile") %>
+#   bucket: your_own_bucket-<%= Rails.env %>
+
+# Use bin/rails credentials:edit to set the Azure Storage secret (as azure_storage:storage_access_key)
+# microsoft:
+#   service: AzureStorage
+#   storage_account_name: your_account_name
+#   storage_access_key: <%= Rails.application.credentials.dig(:azure_storage, :storage_access_key) %>
+#   container: your_container_name-<%= Rails.env %>
+
+# mirror:
+#   service: Mirror
+#   primary: local
+#   mirrors: [ amazon, google, microsoft ]
+
+```
+
+# config/routes.rb
+
+```rb
+Rails.application.routes.draw do
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # Defines the root path route ("/")
+  # root "articles#index"
+end
+
+```
+
+# config/puma.rb
+
+```rb
+# Puma can serve each request in a thread from an internal thread pool.
+# The `threads` method setting takes two numbers: a minimum and maximum.
+# Any libraries that use thread pools should be configured to match
+# the maximum value specified for Puma. Default is set to 5 threads for minimum
+# and maximum; this matches the default thread size of Active Record.
+#
+max_threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
+min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
+threads min_threads_count, max_threads_count
+
+# Specifies the `worker_timeout` threshold that Puma will use to wait before
+# terminating a worker in development environments.
+#
+worker_timeout 3600 if ENV.fetch("RAILS_ENV", "development") == "development"
+
+# Specifies the `port` that Puma will listen on to receive requests; default is 3000.
+#
+port ENV.fetch("PORT") { 3000 }
+
+# Specifies the `environment` that Puma will run in.
+#
+environment ENV.fetch("RAILS_ENV") { "development" }
+
+# Specifies the `pidfile` that Puma will use.
+pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
+
+# Specifies the number of `workers` to boot in clustered mode.
+# Workers are forked web server processes. If using threads and workers together
+# the concurrency of the application would be max `threads` * `workers`.
+# Workers do not work on JRuby or Windows (both of which do not support
+# processes).
+#
+# workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+
+# Use the `preload_app!` method when specifying a `workers` number.
+# This directive tells Puma to first boot the application and load code
+# before forking the application. This takes advantage of Copy On Write
+# process behavior so workers use less memory.
+#
+# preload_app!
+
+# Allow puma to be restarted by `bin/rails restart` command.
+plugin :tmp_restart
+
+```
+
+# config/importmap.rb
+
+```rb
+# Pin npm packages by running ./bin/importmap
+
+pin "application", preload: true
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
+
+```
+
+# config/environment.rb
+
+```rb
+# Load the Rails application.
+require_relative "application"
+
+# Initialize the Rails application.
+Rails.application.initialize!
+
+```
+
+# config/database.yml
+
+```yml
+# SQLite. Versions 3.8.0 and up are supported.
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem "sqlite3"
+#
+default: &default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  <<: *default
+  database: db/development.sqlite3
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: db/test.sqlite3
+
+production:
+  <<: *default
+  database: db/production.sqlite3
+
+```
+
+# config/credentials.yml.enc
+
+```enc
+zRybEhBfXA8mLlx4AZw9DXJ+p7xcT7FcrEz5oMkQg70AByqrzNLrEMz0lbTwZbeCuHz/wfADJOG7+PHu7eQdcwPcECea+HdpsfczGEWwYyrlRaxMIhdYlk06MDt+ip544H78xynEqCSh6wjCyWnlOq99uFSxNbMzoNJcCVzhIa0RsvK6i9ZbgcgdJYRzn1Cd9TJ37aqefgVkS1FS7KyGDFjDxxqc4R/RwenCpK3Nr7s+OiGBcLIvO+HIblas14MjdXJraQJzkJ3Pij6aC8mE6P4RN9coxefBtWEkKsRqJ+m1SMvdG0+pGY9NiInnhGX3YXMJl3FDtaKxjajFo9iJu8tf6XmTQ81hiAAFFDJkL2HTqulP46Bjbf76eLVlJOH+3u8CUcb19l8xAAJhAEaZ2l59vvI/vctYzmWc--Sb+c1lxTGpJ6ui19--uT1P8R16CotcVu2TSO4Nvg==
+```
+
+# config/cable.yml
+
+```yml
+development:
+  adapter: redis
+  url: redis://localhost:6379/1
+
+test:
+  adapter: test
+
+production:
+  adapter: redis
+  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  channel_prefix: interview_production
+
+```
+
+# config/boot.rb
+
+```rb
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
+
+require "bundler/setup" # Set up gems listed in the Gemfile.
+require "bootsnap/setup" # Speed up boot time by caching expensive operations.
+
+```
+
+# config/application.rb
+
+```rb
+require_relative "boot"
+
+require "rails/all"
+
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
+
+module Interview
+  class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 7.1
+
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
+  end
+end
+
+```
+
 # test/system/.keep
 
 ```
@@ -3044,7 +3058,13 @@ response = claude_client.messages(messages,
 
 ```
 
-# test/integration/.keep
+# test/mailers/.keep
+
+```
+
+```
+
+# test/helpers/.keep
 
 ```
 
@@ -3056,7 +3076,7 @@ response = claude_client.messages(messages,
 
 ```
 
-# lib/assets/.keep
+# test/integration/.keep
 
 ```
 
@@ -3068,13 +3088,7 @@ response = claude_client.messages(messages,
 
 ```
 
-# test/mailers/.keep
-
-```
-
-```
-
-# test/helpers/.keep
+# lib/assets/.keep
 
 ```
 
@@ -3481,22 +3495,6 @@ end
 
 ```
 
-# app/javascript/application.js
-
-```js
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
-import "@hotwired/turbo-rails"
-
-```
-
-# app/controllers/application_controller.rb
-
-```rb
-class ApplicationController < ActionController::Base
-end
-
-```
-
 # app/jobs/application_job.rb
 
 ```rb
@@ -3510,10 +3508,26 @@ end
 
 ```
 
+# app/javascript/application.js
+
+```js
+// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+import "@hotwired/turbo-rails"
+
+```
+
 # app/helpers/application_helper.rb
 
 ```rb
 module ApplicationHelper
+end
+
+```
+
+# app/controllers/application_controller.rb
+
+```rb
+class ApplicationController < ActionController::Base
 end
 
 ```
@@ -3642,12 +3656,6 @@ end
 
 ```
 
-# app/assets/images/.keep
-
-```
-
-```
-
 # app/assets/config/manifest.js
 
 ```js
@@ -3655,6 +3663,12 @@ end
 //= link_directory ../stylesheets .css
 //= link_tree ../../javascript .js
 //= link_tree ../../../vendor/javascript .js
+
+```
+
+# app/assets/images/.keep
+
+```
 
 ```
 
