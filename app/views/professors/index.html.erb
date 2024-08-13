@@ -1,0 +1,25 @@
+<!-- app/views/professors/index.html.erb -->
+<h1>Professors</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>University</th>
+      <th>NIH Person ID</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @professors.each do |professor| %>
+      <tr>
+        <td><%= professor.name %></td>
+        <td><%= professor.university %></td>
+        <td><%= professor.pi_profile_id %></td>
+        <td>
+          <%= link_to 'View Projects', professor_path(professor) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

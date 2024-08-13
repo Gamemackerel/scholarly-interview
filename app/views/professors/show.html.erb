@@ -1,0 +1,31 @@
+<!-- app/views/professors/show.html.erb -->
+<h1><%= @professor.name %></h1>
+<p>University: <%= @professor.university %></p>
+<p>NIH Person ID: <%= @professor.pi_profile_id %></p>
+
+<h2>Projects</h2>
+
+<%= button_to 'Fetch Projects', fetch_projects_professor_path(@professor), method: :post %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Project Number</th>
+      <th>Fiscal Year</th>
+      <th>Organization</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @professor.projects.each do |project| %>
+      <tr>
+        <td><%= project.project_num %></td>
+        <td><%= project.fiscal_year %></td>
+        <td><%= project.organization %></td>
+        <td><%= project.project_start_date %></td>
+        <td><%= project.project_end_date %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
