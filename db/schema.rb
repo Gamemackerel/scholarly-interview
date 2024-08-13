@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_13_171503) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_13_174046) do
   create_table "professors", force: :cascade do |t|
     t.integer "pi_profile_id", null: false
     t.string "name"
     t.string "university"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_projects_fetch"
     t.index ["pi_profile_id"], name: "index_professors_on_pi_profile_id", unique: true
   end
 

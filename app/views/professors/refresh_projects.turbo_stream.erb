@@ -1,0 +1,12 @@
+<!-- app/views/professors/refresh_projects.turbo_stream.erb -->
+<%= turbo_stream.replace "projects_table" do %>
+  <%= render partial: "projects_table", locals: { projects: @projects } %>
+<% end %>
+
+<%= turbo_stream.replace "fetch_projects_button" do %>
+  <%= button_to "Fetch Projects", fetch_projects_professor_path(@professor), method: :post, data: { turbo_stream: true } %>
+<% end %>
+
+<%= turbo_stream.update "last_fetched" do %>
+  Last fetched: <%= @professor.last_projects_fetch %>
+<% end %>

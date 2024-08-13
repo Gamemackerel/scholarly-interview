@@ -1,0 +1,8 @@
+<!-- app/views/professors/fetch_projects.turbo_stream.erb -->
+<%= turbo_stream.replace "fetch_projects_button" do %>
+  <%= button_to "Refreshing...", "#", disabled: true %>
+<% end %>
+
+<%= turbo_stream.append "refresh_projects" do %>
+  <%= turbo_frame_tag "refresh_projects", src: refresh_projects_professor_path(@professor), data: { turbo_action: "advance" } %>
+<% end %>

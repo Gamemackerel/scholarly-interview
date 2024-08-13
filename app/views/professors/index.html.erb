@@ -18,6 +18,7 @@
         <td><%= professor.pi_profile_id %></td>
         <td>
           <%= link_to 'View Projects', professor_path(professor) %>
+          <%= button_to 'Fetch Projects', fetch_projects_professor_path(professor), method: :post %>
         </td>
       </tr>
     <% end %>

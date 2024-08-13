@@ -33,5 +33,8 @@ class FetchProfessorProjectsJob < ApplicationJob
 
       offset += limit
     end
+
+    # Update a timestamp to signal job completion
+    professor.update(last_projects_fetch: Time.current)
   end
 end
